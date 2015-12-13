@@ -1,3 +1,5 @@
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -43,12 +45,17 @@ public class CentralServer {
 
         @Override
         public void run() {
-            System.out.println("Got a client !");
-
-            // Do whatever required to process the client's request
+            System.out.println("Server: Got a client from: " + clientSocket.getInetAddress().getHostAddress());
 
             try {
-                clientSocket.close();
+//              System.out.println("Just connected to " + clientSocket.getRemoteSocketAddress());
+              DataInputStream in = new DataInputStream(clientSocket.getInputStream());
+              //System.out.println(in.readUTF());
+              while (in.readUTF() != null) {
+                DataOutputStream out = new DataOutputStream(clientSocket.getOutputStream());
+                out.writeUTF("Thank you for connecting to " + clientSocket.getLocalSocketAddress());
+              }
+              clientSocket.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
